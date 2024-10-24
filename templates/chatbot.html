@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allergy Assistant</title>
+    <!-- Materialize CSS for UI Styling -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <style>
+        html, body {
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+            height: 100%; /* Set height to 100% */
+            display: flex;
+            flex-direction: column; /* Allows the navbar to stay at the bottom */
+        }
+
+        .chat-container {
+            flex: 1; /* Fills the remaining space above the navbar */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Ensures chat area expands correctly */
+        }
+
+        .navbar {
+            background-color: white; /* White background for navbar */
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            position: relative; /* Adjusted for better positioning */
+            width: 100%; /* Full width */
+            z-index: 1000; /* Stays above other content */
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: center; /* Center the items */
+            align-items: center; /* Vertically centers the items */
+            height: 50px; /* Set a height for the navbar */
+        }
+
+        .nav-links {
+            display: flex; /* Flex display for horizontal alignment */
+            list-style-type: none; /* Removes bullet points */
+            padding: 0; /* No padding */
+            margin: 0; /* No margin */
+        }
+
+        .nav-links li {
+            margin: 0 20px; /* Adjusts space between links */
+        }
+
+        .nav-links a {
+            text-decoration: none; /* Removes underline */
+            color: #333; /* Text color */
+            font-weight: bold; /* Bold text */
+            line-height: 50px; /* Vertically centers the text */
+        }
+
+        .nav-links a:hover {
+            color: #007bff; /* Change color on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chatbot-card">
+            <div class="chat-header">
+                <h5>Your Personal Allergy Assistant</h5>
+            </div>
+
+            <div id="chat-window" class="chat-window">
+                <!-- Chat messages will appear here -->
+            </div>
+
+            <div class="chat-input">
+                <input id="user-input" type="text" placeholder="Type your message..." class="validate">
+                <button id="send-btn" class="btn waves-effect waves-light" type="submit">Send</button>
+            </div>
+
+            <!-- Disclaimer -->
+            <p class="disclaimer">Important: This chatbot is for educational purposes. Always consult your physician for medical advice.</p>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-wrapper">
+            <ul class="nav-links">
+                <li><a href="/" class="waves-effect waves-light">Chat</a></li>
+                <li><a href="/restaurants" class="waves-effect waves-light">Restaurants</a></li>
+                <li><a href="/allergy_profile" class="waves-effect waves-light">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- JQuery and Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+</body>
+</html>

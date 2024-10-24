@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allergy Profile</title>
+    <!-- Link to Materialize CSS from CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/allergy_styles.css') }}"> <!-- Link to your custom styles file -->
+</head>
+<style>
+html, body {
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    height: 100%; /* Set height to 100% */
+}
+
+.navbar {
+    background-color: white; /* White background for navbar */
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 100%; /* Full width */
+    z-index: 1000; /* Stays above other content */
+}
+
+.nav-wrapper {
+    display: flex;
+    justify-content: center; /* Center the items */
+    align-items: center; /* Vertically centers the items */
+    height: 50px; /* Set a height for the navbar */
+}
+
+.nav-links {
+    display: flex; /* Flex display for horizontal alignment */
+    list-style-type: none; /* Removes bullet points */
+    padding: 0; /* No padding */
+    margin: 0; /* No margin */
+}
+
+.nav-links li {
+    margin: 0 20px; /* Adjusts space between links */
+}
+
+.nav-links a {
+    text-decoration: none; /* Removes underline */
+    color: #333; /* Text color */
+    font-weight: bold; /* Bold text */
+    line-height: 50px; /* Vertically centers the text */
+}
+
+.nav-links a:hover {
+    color: #007bff; /* Change color on hover */
+}
+</style>
+<body>
+    <div id="qr-modal" class="modal">
+        <div class="modal-content">
+            <h4>QR Code</h4>
+            <img id="qr-code-image" src="" alt="QR Code" style="width: 150px; height: 150px;"> <!-- Set size here -->
+            <p>This QR code links to the following <a href="#">site.</a></p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close btn red">Close</button>
+        </div>
+    </div>    
+    <div class="container">
+        <div id="form-container" class="card-panel">
+            <h1 class="center-align">Your Allergy Profile</h1>
+            <form id="allergy-form">
+                <div id="allergy-container" class="input-field">
+                    <div class="row" id="allergy-1">
+                        <div class="col s12 m8">
+                            <select class="browser-default" name="allergy" required>
+                                <option value="" disabled selected>Choose your allergy</option>
+                                <option value="Peanuts">Peanuts</option>
+                                <option value="Tree Nuts">Tree Nuts</option>
+                                <option value="Milk">Milk</option>
+                                <option value="Eggs">Eggs</option>
+                                <option value="Fish">Fish</option>
+                                <option value="Shellfish">Shellfish</option>
+                                <option value="Wheat">Wheat</option>
+                                <option value="Soy">Soy</option>
+                            </select>
+                        </div>
+                        <div class="col s12 m3">
+                            <label>Anaphylactic:</label>
+                            <p>
+                                <label>
+                                    <input name="anaphylactic-1" type="radio" value="yes" required />
+                                    <span>Yes</span>
+                                </label>
+                                <label>
+                                    <input name="anaphylactic-1" type="radio" value="no" required />
+                                    <span>No</span>
+                                </label>
+                            </p>
+                        </div>
+                        <!-- Cross Button to Remove Allergy Row -->
+                        <div class="col s12 m1">
+                            <button type="button" class="remove-allergy btn red" disabled>&times;</button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="add-allergy" class="btn">Add Another Allergy</button>
+                <button type="submit" class="btn blue">Submit</button>
+                
+            </form>
+        </div>
+        <div id="saved-info" class="card-panel" style="display: none;">
+            <h1 class="center-align">Your Saved Allergy Profile</h1>
+            <div id="profile-display"></div>
+        </div>
+        <nav class="navbar">
+            <div class="nav-wrapper">
+                <ul class="nav-links">
+                    <li><a href="/" class="waves-effect waves-light">Chat</a></li>
+                    <li><a href="/restaurants" class="waves-effect waves-light">Restaurants</a></li>
+                    <li><a href="/allergy_profile" class="waves-effect waves-light">Profile</a></li>
+                </ul>
+            </div>
+        </nav>
+            <!-- Navbar directly attached -->
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="{{ url_for('static', filename='js/allergy_profile.js') }}"></script> <!-- Link to your custom JS file -->
+</body>
+</html>

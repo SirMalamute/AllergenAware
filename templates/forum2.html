@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum</title>
+    <!-- Materialize CSS for UI Styling -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <!-- <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet"> -->
+    <style>
+        body {
+            background-color: #fafafa; /* Light gray background */
+            color: #333; /* Dark text for better contrast */
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .forum-container {
+            margin: 50px auto;
+            max-width: 800px;
+        }
+
+        .forum-card {
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-header h5 {
+            font-weight: bold;
+            font-size: 1.8em;
+            color: #00796b; /* Dark teal color */
+            margin-bottom: 15px;
+        }
+
+        .input-field textarea {
+            height: 100px;
+        }
+
+        .collection-item {
+            padding: 20px;
+            margin: 10px 0;
+            background-color: #f9f9f9; /* Slightly lighter background for posts */
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment-btn {
+            margin-top: 10px;
+            background-color: #00796b; /* Matching button color */
+        }
+
+        .comment-section ul {
+            margin-left: 10px;
+        }
+
+        .btn {
+            background-color: #00796b; /* Same teal button color */
+        }
+
+        .btn:hover {
+            background-color: #004d40; /* Darker teal on hover */
+        }
+
+        .modal-content h6 {
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container forum-container">
+        <!-- Forum Header -->
+        <div class="forum-card z-depth-2">
+            <div class="chat-header">
+                <h5>Welcome to the forum for individuals with {{allergy}} allergies.</h5>
+            </div>
+            <div>
+                <p>Share your thoughts, ask questions and connect with others.</p>
+            </div>
+        </div>
+
+        <!-- Form to add a new post -->
+        <div class="forum-card z-depth-2">
+            <h6>Add a New Post</h6>
+            <div class="input-field">
+                <textarea id="post_text" class="materialize-textarea" placeholder="Type your message here..."></textarea>
+            </div>
+            <button class="btn waves-effect waves-light" id="add-post-btn">Post</button>
+        </div>
+
+        <!-- Display existing posts -->
+        <div class="forum-card z-depth-2">
+            <h6>Recent Posts</h6>
+            <ul class="collection">
+                {% for post in posts %}
+                <li class="collection-item">
+                    <p>{{ post.text }}</p>
+                    <span class="grey-text">{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                    <div class="comment-section">
+                        <a class="btn-small waves-effect waves-light comment-btn" onclick="openCommentModal('{{ post.id }}')">Comment</a>
+                        <ul class="collection">
+                            {% for comment in post.comments %}
+                            <li class="collection-item">
+                                <p>{{ comment.text }}</p>
+                                <span class="grey-text">{{ comment.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Modal for adding a comment -->
+        <div id="comment-modal" class="modal">
+            <div class="modal-content">
+                <h6>Add a Comment</h6>
+                <div class="input-field">
+                    <textarea id="comment_text" class="materialize-textarea" placeholder="Type your comment here..."></textarea>
+                </div>
+                <button class="btn waves-effect waves-light" id="add-comment-btn">Comment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JQuery and Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <!-- Modal initialization script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.modal');
+            var instances = M.Modal.init(elems);
+        });
+
+        // Handle adding a new post
+        document.getElementById('add-post-btn').addEventListener('click', function () {
+            var postText = document.getElementById('post_text').value;
+            if (postText) {
+                fetch('/add_post', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        allergy: "{{ allergy }}",
+                        post_text: postText
+                    })
+                }).then(response => response.json()).then(data => {
+                    if (data.status === 'success') {
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+
+        // Handle adding a comment
+        let selectedPostId = '';
+        function openCommentModal(postId) {
+            selectedPostId = postId;
+            var instance = M.Modal.getInstance(document.getElementById('comment-modal'));
+            instance.open();
+        }
+
+        document.getElementById('add-comment-btn').addEventListener('click', function () {
+            var commentText = document.getElementById('comment_text').value;
+            if (commentText) {
+                fetch('/add_comment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        allergy: "{{ allergy }}",
+                        post_id: selectedPostId,
+                        comment_text: commentText
+                    })
+                }).then(response => response.json()).then(data => {
+                    if (data.status === 'success') {
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <!-- Materialize CSS for UI Styling -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+            height: 100%; /* Set height to 100% */
+            display: flex;
+            flex-direction: column; /* Allows the navbar to stay at the bottom */
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+            background-color: #f5f7fa; /* Light background color */
+            font-family: 'Roboto', sans-serif; /* Use the same font */
+        }
+
+        .error-container {
+            text-align: center; /* Center text */
+            padding: 20px;
+            border-radius: 20px;
+            background-color: #ffffff; /* White background for the card */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        h1 {
+            font-size: 48px; /* Large font size for the main message */
+            color: #333; /* Dark text color */
+        }
+
+        p {
+            font-size: 18px; /* Standard font size for the message */
+            color: #666; /* Grey text color */
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: center; /* Center the navbar items */
+            align-items: center; /* Vertically centers the items */
+            height: 50px; /* Set a height for the navbar */
+        }
+
+        .nav-links {
+            display: flex; /* Flex display for horizontal alignment */
+            list-style-type: none; /* Removes bullet points */
+            padding: 0; /* No padding */
+            margin: 0; /* No margin */
+        }
+
+        .nav-links li {
+            margin: 0 20px; /* Adjusts space between links */
+        }
+
+        .nav-links a {
+            text-decoration: none; /* Removes underline */
+            color: #333; /* Text color */
+            font-weight: bold; /* Bold text */
+        }
+
+        .nav-links a:hover {
+            color: #007bff; /* Change color on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1>404</h1>
+        <p>Oops! The page you're looking for doesn't exist.</p>
+        <p>It might have been removed or you entered the wrong URL.</p>
+        <p><a href="#home" class="waves-effect waves-light">Go Back Home</a></p>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-wrapper">
+            <ul class="nav-links">
+                <li><a href="#home" class="waves-effect waves-light">Home</a></li>
+                <li><a href="#about" class="waves-effect waves-light">About</a></li>
+                <li><a href="#contact" class="waves-effect waves-light">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- JQuery and Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>

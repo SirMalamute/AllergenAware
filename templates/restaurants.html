@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Ratings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/restaurants.css') }}">
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
+
+    <style>
+        /* Additional styles for the sticky button */
+        .add-restaurant-button {
+            position: fixed;
+            bottom: 80px; /* Adjusted to fit above the navbar */
+            right: 20px;
+            background-color: #2196F3; /* Light blue color */
+            color: white;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s; /* Smooth transition for hover effect */
+        }
+
+        /* Hover effect */
+        .add-restaurant-button:hover {
+            background-color: #1976D2; /* Darker blue color on hover */
+        }
+
+        /* Style for the modal */
+        .modal {
+            width: 300px; /* Adjust the modal width */
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: white; /* White background for navbar */
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            position: sticky; /* Makes navbar sticky */
+            bottom: 0; /* Sticks to the bottom of the viewport */
+            width: 100%; /* Full width */
+            z-index: 1000; /* Stays above other content */
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: center; /* Center the items */
+            align-items: center; /* Vertically centers the items */
+            height: 50px; /* Set a height for the navbar */
+        }
+
+        .nav-links {
+            display: flex; /* Flex display for horizontal alignment */
+            list-style-type: none; /* Removes bullet points */
+            padding: 0; /* No padding */
+            margin: 0; /* No margin */
+        }
+
+        .nav-links li {
+            margin: 0 20px; /* Adjusts space between links */
+        }
+
+        .nav-links a {
+            text-decoration: none; /* Removes underline */
+            color: #333; /* Text color */
+            font-weight: bold; /* Bold text */
+            line-height: 50px; /* Vertically centers the text */
+        }
+
+        .nav-links a:hover {
+            color: #007bff; /* Change color on hover */
+        }
+
+        /* Styles for restaurant cards */
+        .restaurant-card {
+            margin-bottom: 15px; /* Reduced margin to avoid excessive space */
+            padding: 10px; /* Added padding for better spacing */
+            border: 1px solid #ddd; /* Optional: Add border for card distinction */
+            border-radius: 5px; /* Rounded corners */
+            transition: box-shadow 0.3s; /* Smooth shadow transition */
+        }
+
+        .restaurant-card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Shadow on hover */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .add-restaurant-button {
+                bottom: 80px; /* Keep the button above the navbar */
+                right: 10px; /* Adjust right for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="center-align">Restaurant Allergy Ratings</h1>
+        <div class="row">
+            <div class="input-field col s12">
+                <input id="search-bar" type="text" placeholder="Search Restaurants...">
+            </div>
+        </div>
+        <div class="row" id="restaurant-container">
+            <!-- Restaurant cards will be dynamically injected here -->
+            <div class="col s12 m6 l4">
+                <div class="restaurant-card">
+                    <h5>Restaurant Name</h5>
+                    <p>Rating: ★★★★☆</p>
+                    <p>Comment: Great food!</p>
+                </div>
+            </div>
+            <!-- Repeat the above block for more restaurants -->
+        </div>
+    </div>
+
+    <!-- Rating Modal -->
+    <div id="rating-modal" class="modal">
+        <div class="modal-content">
+            <h4>Rate the Restaurant</h4>
+            <div class="input-field">
+                <select id="star-rating">
+                    <option value="" disabled selected>Choose your rating</option>
+                    <option value="1">1 Star</option>
+                    <option value="2">2 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+                <label for="star-rating">How many stars is this restaurant?</label>
+            </div>
+            <div class="input-field">
+                <textarea id="comment" class="materialize-textarea"></textarea>
+                <label for="comment">Add Comment</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close btn" id="submit-rating">Submit</button>
+            <button class="modal-close btn-flat">Close</button>
+        </div>
+    </div>
+
+    <!-- Add Restaurant Modal -->
+    <div id="add-restaurant-modal" class="modal">
+        <div class="modal-content">
+            <h4>Add New Restaurant Rating</h4>
+            <div class="input-field">
+                <input id="new-restaurant-name" type="text" placeholder="Restaurant Name">
+                <label for="new-restaurant-name">Restaurant Name</label>
+            </div>
+            <div class="input-field">
+                <select id="new-star-rating">
+                    <option value="" disabled selected>Choose your rating</option>
+                    <option value="1">1 Star</option>
+                    <option value="2">2 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+                <label for="new-star-rating">How many stars is this restaurant?</label>
+            </div>
+            <div class="input-field">
+                <textarea id="new-comment" class="materialize-textarea"></textarea>
+                <label for="new-comment">Add Comment</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close btn" id="submit-new-rating">Submit</button>
+            <button class="modal-close btn-flat">Close</button>
+        </div>
+    </div>
+
+    <!-- Sticky Add Button -->
+    <button class="add-restaurant-button" id="add-restaurant-button">+</button>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-wrapper">
+            <ul class="nav-links">
+                <li><a href="/" class="waves-effect waves-light">Chat</a></li>
+                <li><a href="/restaurants" class="waves-effect waves-light">Restaurants</a></li>
+                <li><a href="/allergy_profile" class="waves-effect waves-light">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="{{ url_for('static', filename='js/restaurants.js') }}"></script>
+</body>
+</html>
